@@ -63,7 +63,7 @@ tf.app.flags.DEFINE_integer(
     'save_interval_secs', 600,
     'The frequency with which the model is saved, in seconds.')
 tf.app.flags.DEFINE_float(
-    'gpu_memory_fraction', 0.8, 'GPU memory fraction to use.')
+    'gpu_memory_fraction', 0.7, 'GPU memory fraction to use.')
 
 # =========================================================================== #
 # Optimization Flags.
@@ -132,7 +132,7 @@ tf.app.flags.DEFINE_float(
 tf.app.flags.DEFINE_string(
     'dataset_name', 'imagenet', 'The name of the dataset to load.')
 tf.app.flags.DEFINE_integer(
-    'num_classes', 21, 'Number of classes to use in the dataset.')
+    'num_classes', 6, 'Number of classes to use in the dataset.')
 tf.app.flags.DEFINE_string(
     'dataset_split_name', 'train', 'The name of the train/test split.')
 tf.app.flags.DEFINE_string(
@@ -148,10 +148,10 @@ tf.app.flags.DEFINE_string(
     'preprocessing_name', None, 'The name of the preprocessing to use. If left '
     'as `None`, then the model_name flag is used.')
 tf.app.flags.DEFINE_integer(
-    'batch_size', 32, 'The number of samples in each batch.')
+    'batch_size', 8, 'The number of samples in each batch.')
 tf.app.flags.DEFINE_integer(
     'train_image_size', None, 'Train image size')
-tf.app.flags.DEFINE_integer('max_number_of_steps', None,
+tf.app.flags.DEFINE_integer('max_number_of_steps', 1000,
                             'The maximum number of training steps.')
 
 # =========================================================================== #

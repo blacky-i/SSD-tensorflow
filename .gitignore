@@ -14,10 +14,12 @@ checkpoints/models/*
 checkpoints/VGG_VOC0712_SSD_*
 checkpoints/vgg_16.ckpt
 checkpoints/model.ckpt-*
+checkpoints/transport.ckpt*
 
 logs/
 *.log
 nohup.out
+logs_finetune
 
 ssd-tensorflow.sublime-workspace
 ssd-tensorflow.sublime-project
@@ -25,3 +27,4 @@ ssd-tensorflow.sublime-project
 datasets/data
 .vscode
 tf
+tfrecords

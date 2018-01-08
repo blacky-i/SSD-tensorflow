@@ -86,14 +86,19 @@ def _process_image(directory, name):
         labels.append(int(VOC_LABELS[label][0]))
         labels_text.append(label.encode('ascii'))
 
-        bboxes.append((float(obj['y_left']),
-                    float(obj['x_left']),
-                    float(obj['y_right']),
-                    float(obj['x_right'])
+        bboxes.append((float(obj['y_left']) / shape[0],
+                    float(obj['x_left']) / shape[1],
+                   _min(float(obj['y_right']) / shape[0], 1),
+                    _min(float(obj['x_right']) / shape[1], 1),
                     ))
 
     return image_data, shape, bboxes, labels, labels_text
 
+def _min(lhs ,rhs):
+    if lhs<rhs:
+        return lhs
+    else:
+        return float(rhs)
 
 def _convert_to_example(image_data, labels, labels_text, bboxes, shape):
 

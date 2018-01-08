@@ -15,6 +15,7 @@ import sys
 sys.path.append(__parent_dir)
 
 from nets import ssd_vgg_300, ssd_common, np_methods
+from nets.ssd_vgg_300 import SSDParams
 from preprocessing import ssd_vgg_preprocessing
 #from notebooks import visualization
 # Main image processing routine.
@@ -65,7 +66,7 @@ def process_image(img, select_threshold=0.5, nms_threshold=.45, net_shape=(300, 
     # Get classes and bboxes from the net outputs.
     rclasses, rscores, rbboxes = np_methods.ssd_bboxes_select(
             rpredictions, rlocalisations, ssd_anchors,
-            select_threshold=select_threshold, img_shape=net_shape, num_classes=21, decode=True)
+            select_threshold=select_threshold, img_shape=net_shape, num_classes=7, decode=True)
     
     rbboxes = np_methods.bboxes_clip(rbbox_img, rbboxes)
     rclasses, rscores, rbboxes = np_methods.bboxes_sort(rclasses, rscores, rbboxes, top_k=400)
@@ -77,7 +78,6 @@ def process_image(img, select_threshold=0.5, nms_threshold=.45, net_shape=(300, 
 # TensorFlow session: grow memory when needed. TF, DO NOT USE ALL MY GPU MEMORY!!!
 gpu_options = tf.GPUOptions(allow_growth=True)
 config = tf.ConfigProto(log_device_placement=False, gpu_options=gpu_options)
-config.gpu_options.per_process_gpu_memory_fraction = 0.333
 
 isess = tf.InteractiveSession(config=config)
 # Input placeholder.
@@ -92,12 +92,44 @@ image_4d = tf.expand_dims(image_pre, 0)
 # Define the SSD model.
 reuse = True if 'ssd_net' in locals() else None
 ssd_net = ssd_vgg_300.SSDNet()
+ssd_net.params = SSDParams(
+        img_shape=(300, 300),
+        num_classes=6,
+        no_annotation_label=21,
+        feat_layers=['block4', 'block7', 'block8', 'block9', 'block10', 'block11'],
+        feat_shapes=[(38, 38), (19, 19), (10, 10), (5, 5), (3, 3), (1, 1)],
+        anchor_size_bounds=[0.15, 0.90],
+        # anchor_size_bounds=[0.20, 0.90],
+        anchor_sizes=[(21., 45.),
+                      (45., 99.),
+                      (99., 153.),
+                      (153., 207.),
+                      (207., 261.),
+                      (261., 315.)],
+        # anchor_sizes=[(30., 60.),
+        #               (60., 111.),
+        #               (111., 162.),
+        #               (162., 213.),
+        #               (213., 264.),
+        #               (264., 315.)],
+        anchor_ratios=[[2, .5],
+                       [2, .5, 3, 1./3],
+                       [2, .5, 3, 1./3],
+                       [2, .5, 3, 1./3],
+                       [2, .5],
+                       [2, .5]],
+        anchor_steps=[8, 16, 32, 64, 100, 300],
+        anchor_offset=0.5,
+        normalizations=[20, -1, -1, -1, -1, -1],
+        prior_scaling=[0.1, 0.1, 0.2, 0.2]
+        )
+
 with slim.arg_scope(ssd_net.arg_scope(data_format=data_format)):
     predictions, localisations, _, _ = ssd_net.net(image_4d, is_training=False, reuse=reuse)
 
 # Restore SSD model.
-ckpt_filename = os.path.join(__parent_dir,'checkpoints','ssd_300_vgg.ckpt')
-# ckpt_filename = '../checkpoints/VGG_VOC0712_SSD_300x300_ft_iter_120000.ckpt'
+ckpt_filename = os.path.join(__parent_dir, 'checkpoints', 'transport.ckpt')
+
 isess.run(tf.global_variables_initializer())
 saver = tf.train.Saver()
 saver.restore(isess, ckpt_filename)
@@ -106,15 +138,17 @@ saver.restore(isess, ckpt_filename)
 ssd_anchors = ssd_net.anchors(net_shape)
 
 # Test on some demo image and visualize output.
-path = os.path.join(__parent_dir,'demo','img')
+path = os.path.join(__parent_dir, 'datasets', 'data\Transport\images')
 image_names = sorted(os.listdir(path))
-print(image_names,image_names[-5])
-img = mpimg.imread( os.path.join(path , image_names[-6]))
 
-rclasses, rscores, rbboxes =  process_image(img)
+for i,img_name in enumerate(image_names):
+    if 'png' not in img_name:
+        img = mpimg.imread(os.path.join(path, img_name))
+        # if i>50:
+        #     print(i,image_names[i+1])
+        rclasses, rscores, rbboxes =  process_image(img)
 
-print(rclasses,rscores,rbboxes)
+        print(img_name,rclasses,rscores,rbboxes)
 
-vis_detections(img,rclasses,rbboxes,rscores)
-print(rclasses,rscores,rbboxes)
-plt.show()
+# vis_detections(img,rclasses,rbboxes,rscores)
+# plt.show()
