@@ -40,7 +40,7 @@ tf.app.flags.DEFINE_float(
 # General Flags.
 # =========================================================================== #
 tf.app.flags.DEFINE_string(
-    'train_dir', '/tmp/tfmodel/',
+    'train_dir', 'tmp/tfmodel/',
     'Directory where checkpoints and event logs are written to.')
 tf.app.flags.DEFINE_integer('num_clones', 1,
                             'Number of model clones to deploy.')
