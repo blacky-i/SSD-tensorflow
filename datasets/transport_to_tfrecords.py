@@ -188,6 +188,7 @@ def run(dataset_dir, output_dir, name='voc_train', shuffling=False):
                 sys.stdout.flush()
 
                 filename = filenames[i]
+                print(filename.encode('utf8'))
                 img_name = filename[:-5]
                 _add_to_tfrecord(dataset_dir, img_name, tfrecord_writer)
                 i += 1
@@ -196,4 +197,4 @@ def run(dataset_dir, output_dir, name='voc_train', shuffling=False):
     # Finally, write the labels file:
     # labels_to_class_names = dict(zip(range(len(_CLASS_NAMES)), _CLASS_NAMES))
     # dataset_utils.write_label_file(labels_to_class_names, dataset_dir)
-    print('\nFinished converting the Pascal VOC dataset!')
+    print('\nFinished converting the transport dataset!')

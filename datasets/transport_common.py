@@ -12,9 +12,8 @@ VOC_LABELS = {
     'Autobus': (1, 'Autobus'),
     'Numbers': (2, 'Numbers'),
     'Taxi': (3, 'Taxi'),
-    'Train': (4, 'Train'),
-    'Tramvay': (5, 'Tramvay'),
-    'Trolleybus': (6, 'Trolleybus'), 
+    'Tramvay': (4, 'Tramvay'),
+    'Trolleybus': (5, 'Trolleybus'), 
 }
 
 

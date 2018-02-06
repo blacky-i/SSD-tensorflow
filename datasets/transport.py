@@ -1,6 +1,7 @@
 """Provides data for the Transport Dataset (images + annotations).
 """
 import tensorflow as tf
+from datasets import transport_common
 from datasets import pascalvoc_common
 
 slim = tf.contrib.slim
@@ -16,27 +17,25 @@ ITEMS_TO_DESCRIPTIONS = {
 # (Images, Objects) statistics on every class.
 TRAIN_STATISTICS = {
     'none': (0, 0),
-    'autobus': (1, 1),
-    'numbers': (1, 1),
-    'taxi': (1, 1),
-    'train': (1, 1),
-    'tramvay': (1, 1),
-    'trolleybus': (1, 1), 
-    'total': (6, 6),
+    'autobus': (2, 372),
+    'numbers': (184, 372),
+    'taxi': (1, 372),
+    'tramvay': (123, 372),
+    'trolleybus': (62, 372), 
+    'total': (372, 372),
 }
 TEST_STATISTICS = {
     'none': (0, 0),
     'autobus': (1, 1),
     'numbers': (1, 1),
     'taxi': (1, 1),
-    'train': (1, 1),
     'tramvay': (1, 1),
     'trolleybus': (1, 1), 
     'total': (6, 6),
 }
 SPLITS_TO_SIZES = {
-    'train': 408,
-    'test': 100,
+    'train': 372,
+    'test': 92,
 }
 SPLITS_TO_STATISTICS = {
     'train': TRAIN_STATISTICS,
@@ -63,7 +62,7 @@ def get_split(split_name, dataset_dir, file_pattern=None, reader=None):
     """
     if not file_pattern:
         file_pattern = FILE_PATTERN
-    return pascalvoc_common.get_split(split_name, dataset_dir,
+    return transport_common.get_split(split_name, dataset_dir,
                                       file_pattern, reader,
                                       SPLITS_TO_SIZES,
                                       ITEMS_TO_DESCRIPTIONS,
